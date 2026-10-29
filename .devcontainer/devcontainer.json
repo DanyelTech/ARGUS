@@ -1,0 +1,25 @@
+{
+  "name": "ARGUS - ROS 2 Jazzy",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/workspaces/argus",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/argus,type=bind",
+  "remoteUser": "root",
+  "runArgs": [
+    "--network=host",
+    "--ipc=host"
+  ],
+  "containerEnv": {
+    "DISPLAY": "${localEnv:DISPLAY}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-iot.vscode-ros",
+        "ms-python.python",
+        "ms-vscode.cpptools"
+      ]
+    }
+  }
+}

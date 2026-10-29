@@ -1,0 +1,18 @@
+# ROS 2 generated files
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# Python generated files
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# IDE and OS files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
