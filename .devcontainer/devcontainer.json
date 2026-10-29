@@ -5,7 +5,7 @@
   },
   "workspaceFolder": "/workspaces/argus",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/argus,type=bind",
-  "remoteUser": "root",
+  "remoteUser": "ubuntu",
   "runArgs": [
     "--network=host",
     "--ipc=host"

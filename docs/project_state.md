@@ -6,10 +6,11 @@
 
 ## Current checkpoint
 
-The repository contains the initial ROS 2 workspace and an `argus_bringup`
-Python package. The package source is located at
-`ros2_ws/src/argus_bringup/` and includes publisher/subscriber nodes for the
-`/argus/status` topic.
+The repository contains the initial ROS 2 workspace, the `argus_bringup`
+Python package, and an empty `argus_description` resource package. The
+bringup package source is located at `ros2_ws/src/argus_bringup/` and includes
+publisher/subscriber nodes for the `/argus/status` topic. Robot description
+files have not yet been implemented.
 
 ## Verified in the repository
 
@@ -22,48 +23,43 @@ Python package. The package source is located at
   per second.
 - The subscriber listens on `/argus/status` and logs received messages.
 - Publisher shutdown checks `rclpy.ok()` before calling `rclpy.shutdown()`.
-- The latest repository commit is
-  `8d67b8b` (`Initial ARGUS ROS 2 setup with publisher-subscriber
-  communication`).
-- The local `main` branch is tracking `origin/main`, configured as
-  `https://github.com/DanyelTech/ARGUS.git`. Before this documentation
-  change, the local branch matched `origin/main` with no Git status
-  differences.
+- `argus_description` is an `ament_cmake` package with clone-safe placeholder
+  directories for future URDF, launch, and RViz resources.
+- Root-level ROS build artifact directories are ignored; ROS commands are run
+  from `ros2_ws/`.
 
-## Previous successful tests
+## Verified tests in this checkpoint
 
-The following results were reported from earlier development sessions. They
-are preserved as historical evidence, but have not been independently
-repeated during this checkpoint:
-
-- The publisher and subscriber ran concurrently.
-- The publisher transmitted status messages once per second.
-- The subscriber received and logged those messages.
-- `ros2 topic info /argus/status` reported one publisher and one subscriber.
+- `cd ros2_ws && colcon build --symlink-install` succeeds for both packages.
+- `cd ros2_ws && colcon test` reports 7 tests, 0 failures, 0 errors, and 1
+  skipped test.
+- Both packages are discoverable after sourcing `ros2_ws/install/setup.bash`.
+- A bounded concurrent runtime test confirmed publisher output and subscriber
+  receipt on `/argus/status`.
+- ROS 2 Jazzy packages for RViz2, Xacro, `robot_state_publisher`, and
+  `joint_state_publisher_gui` are installed.
+- A timeout-based termination can raise `ExternalShutdownException`; this is
+  specific to externally terminating a spinning ROS node and is not a normal
+  Ctrl+C behavior.
 
 ## Not yet verified in this checkpoint
 
-- A fresh end-to-end publisher/subscriber runtime test in the current
-  container.
-- ROS 2 topic discovery during a live run.
-- RViz2, Xacro, and `robot_state_publisher` behavior.
-- The subscriber's `Ctrl+C` shutdown path. Its source contains the intended
-  conditional shutdown guard, but that behavior needs to be retested.
+- Interactive RViz2, Xacro, and `robot_state_publisher` behavior; no model
+  exists yet to exercise them.
 - Physical hardware operation. Hardware remains deferred in favor of
   simulation.
 
 ## Known issues and risks
 
-- Generated `ros2_ws/build/`, `ros2_ws/install/`, and `ros2_ws/log/`
-  directories are excluded from Git and should not be treated as source
-  evidence.
+- The `argus_description` package contains no robot model, launch file, or RViz
+  configuration yet.
+- A fresh Dev Container build is required to validate the explicit `ubuntu`
+  user creation fallback in the Dockerfile.
 
 ## Next action
 
-Run a fresh package build and live publisher/subscriber test, then verify
-`/argus/status` with ROS 2 topic tools. After that, verify the installed
-RViz2, Xacro, and `robot_state_publisher` tools before creating a generic
-4-DOF virtual arm.
+Create and validate `argus_arm.urdf.xacro` with its launch and RViz resources,
+without introducing hardware integration.
 
 ## Working protocol
 
