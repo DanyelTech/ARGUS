@@ -10,8 +10,12 @@
     "--network=host",
     "--ipc=host"
   ],
+  "mounts": [
+    "source=/mnt/wslg/.X11-unix,target=/tmp/.X11-unix,type=bind"
+  ],
   "containerEnv": {
-    "DISPLAY": "${localEnv:DISPLAY}"
+    "DISPLAY": ":0",
+    "QT_QPA_PLATFORM": "xcb"
   },
   "customizations": {
     "vscode": {

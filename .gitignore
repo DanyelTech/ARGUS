@@ -19,3 +19,7 @@ Thumbs.db
 # Environment files
 .env
 .env.*
+
+# Linux core dumps
+core
+core.*

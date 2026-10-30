@@ -28,29 +28,30 @@ complete until its criteria are verified and recorded in
 
 ## Phase 2 — Visualization and robot description
 
-**Status:** Planned
+**Status:** Complete
 
 ### Scope
 
-- Verify RViz2, Xacro, and `robot_state_publisher` in the dev container.
-- Create a generic simulated 4-DOF arm description.
-- Define and verify links, joints, coordinate frames, and joint limits.
-- Launch the model in RViz2.
+- Verified RViz2, Xacro, and `robot_state_publisher` in the dev container.
+- Created a generic simulated 4-DOF arm description.
+- Defined and verified links, joints, coordinate frames, and joint limits.
+- Launched the model in RViz2 with the joint-state GUI.
 
 ### Completion criteria
 
-- Xacro expands successfully.
-- `robot_state_publisher` publishes the expected transforms.
-- RViz2 displays the arm with the expected frame tree.
-- Joint limits and frame names are documented and tested.
+- Xacro expands successfully and passes `check_urdf`.
+- `robot_state_publisher` starts and initializes the expected five-link chain.
+- RViz2 starts with the saved configuration and receives the robot description.
+- Joint limits and frame names are defined in the Xacro and represented in the
+  RViz configuration.
 
 ## Phase 3 — Kinematics and motion control
 
-**Status:** Planned
+**Status:** Next
 
 ### Scope
 
-- Implement forward kinematics for the virtual arm.
+- Implement forward kinematics for the virtual arm as the next milestone.
 - Define and validate inverse kinematics goals and solutions.
 - Add joint control and motion planning interfaces.
 - Connect planned trajectories to the simulated robot.

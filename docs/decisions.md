@@ -62,3 +62,17 @@ the commands used, their results, and any remaining unverified behavior.
 
 **Reason:** Robotics failures can occur in runtime behavior, kinematics,
 coordinate frames, and motion even when code compiles successfully.
+
+## D006 — Configure WSLg/X11 access for container visualization
+
+**Date:** 2026-10-30
+**Status:** Accepted
+
+The dev container mounts WSLg's X11 socket at `/tmp/.X11-unix`, sets
+`DISPLAY` to `:0`, and selects the XCB Qt platform. This configuration is used
+for RViz2 and the joint-state publisher GUI when running the visualization
+launch file from the container.
+
+**Reason:** Keep graphical ROS tools reproducible in the WSLg-backed VS Code
+container instead of depending on a host-specific `DISPLAY` value or manual
+socket setup.

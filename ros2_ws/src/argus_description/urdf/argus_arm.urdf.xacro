@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="argus_arm">
+
+  <!-- ARGUS v1: configurable robot dimensions (metres) -->
+  <xacro:property name="base_radius" value="0.06"/>
+  <xacro:property name="base_height" value="0.08"/>
+  <xacro:property name="upper_arm_length" value="0.20"/>
+  <xacro:property name="forearm_length" value="0.18"/>
+  <xacro:property name="wrist_length" value="0.08"/>
+
+  <!-- Visual dimensions -->
+  <xacro:property name="arm_radius" value="0.025"/>
+
+  <!-- Fixed base -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="${base_radius}" length="${base_height}"/>
+      </geometry>
+      <origin xyz="0 0 ${base_height / 2}" rpy="0 0 0"/>
+      <material name="base_gray">
+        <color rgba="0.35 0.40 0.45 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- Rotating platform -->
+  <link name="base_rotation_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.03"/>
+      </geometry>
+      <origin xyz="0 0 0.015" rpy="0 0 0"/>
+      <material name="rotation_blue">
+        <color rgba="0.20 0.45 0.85 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- J1: Base rotation around Z-axis -->
+  <joint name="base_rotation_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="base_rotation_link"/>
+    <origin xyz="0 0 ${base_height}" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14"
+           effort="10.0" velocity="1.0"/>
+  </joint>
+
+    <!-- Upper arm -->
+  <link name="upper_arm_link">
+    <visual>
+      <geometry>
+        <cylinder radius="${arm_radius}"
+                  length="${upper_arm_length}"/>
+      </geometry>
+      <origin xyz="0 0 ${upper_arm_length / 2}" rpy="0 0 0"/>
+      <material name="arm_blue">
+        <color rgba="0.20 0.45 0.85 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- J2: Shoulder rotation around Y-axis -->
+  <joint name="shoulder_joint" type="revolute">
+    <parent link="base_rotation_link"/>
+    <child link="upper_arm_link"/>
+
+    <origin xyz="0 0 0.03" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+
+    <limit lower="-1.57" upper="1.57"
+           effort="10.0" velocity="1.0"/>
+  </joint>
+
+  <!-- Forearm -->
+  <link name="forearm_link">
+    <visual>
+      <geometry>
+        <cylinder radius="${arm_radius}"
+                  length="${forearm_length}"/>
+      </geometry>
+      <origin xyz="0 0 ${forearm_length / 2}" rpy="0 0 0"/>
+      <material name="forearm_blue">
+        <color rgba="0.15 0.35 0.75 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- J3: Elbow rotation around Y-axis -->
+  <joint name="elbow_joint" type="revolute">
+    <parent link="upper_arm_link"/>
+    <child link="forearm_link"/>
+
+    <origin xyz="0 0 ${upper_arm_length}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+
+    <limit lower="-2.35" upper="2.35"
+           effort="10.0" velocity="1.0"/>
+  </joint>
+
+    <!-- Wrist link -->
+  <link name="wrist_link">
+    <visual>
+      <origin xyz="0 0 ${wrist_length / 2}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${arm_radius}" length="${wrist_length}"/>
+      </geometry>
+      <material name="wrist_blue">
+        <color rgba="0.25 0.65 0.90 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- J4: Wrist rotation around Y-axis -->
+  <joint name="wrist_joint" type="revolute">
+    <parent link="forearm_link"/>
+    <child link="wrist_link"/>
+    <origin xyz="0 0 ${forearm_length}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57"
+           effort="10.0" velocity="1.0"/>
+  </joint>
+
+</robot>
