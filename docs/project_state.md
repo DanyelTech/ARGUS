@@ -2,7 +2,8 @@
 
 **Last updated:** 2026-10-30
 **Project:** ARGUS v1  
-**Current phase:** Software-first development, Phase 1 — ROS 2 foundation
+**Current phase:** Software-first development, Phase 2 complete — visualization
+and robot description
 
 ## Current checkpoint
 
@@ -43,16 +44,26 @@ file, and an RViz configuration.
   check_urdf /dev/stdin` succeeds and reports the expected five-link chain:
   `base_link`, `base_rotation_link`, `upper_arm_link`, `forearm_link`, and
   `wrist_link`.
+- The model contains all five links and four revolute joints:
+  `base_rotation_joint`, `shoulder_joint`, `elbow_joint`, and `wrist_joint`.
+- The Dev Container was rebuilt successfully after updating
+  `.devcontainer/devcontainer.json` to provide WSLg/X11 graphical access.
 - `cd ros2_ws && colcon build --symlink-install` succeeds for both packages
   after adding the robot description resources.
-- `source ros2_ws/install/setup.bash && ros2 launch
-  argus_description display.launch.py` starts `robot_state_publisher`,
-  `joint_state_publisher_gui`, and RViz2; RViz2 initializes with OpenGL and
-  the GUI receives the robot description before the bounded smoke test is
-  interrupted.
-- A timeout-based termination can raise `ExternalShutdownException`; this is
-  specific to externally terminating a spinning ROS node and is not a normal
-  Ctrl+C behavior.
+- `cd ros2_ws && colcon test` reports 11 tests, 0 failures, 0 errors, and 1
+  skipped test.
+- During the successful manual graphical launch, RViz2 and
+  `joint_state_publisher_gui` both opened, and the ARGUS arm was visible in
+  RViz2 with RobotModel status OK.
+- The RViz configuration was saved to
+  `ros2_ws/src/argus_description/rviz/argus.rviz`.
+- `display.launch.py` successfully loads the saved RViz configuration
+  automatically when launching `argus_description`.
+- An earlier bounded automated launch test confirmed that
+  `robot_state_publisher`, `joint_state_publisher_gui`, and RViz2 started and
+  exchanged the robot description. Its externally imposed timeout caused
+  signal-based termination messages; those messages do not describe the later
+  successful manual graphical launch.
 
 ## Not yet verified in this checkpoint
 
@@ -63,10 +74,10 @@ file, and an RViz configuration.
 
 ## Known issues and risks
 
-- The visualization smoke test was bounded with `timeout`; RViz2 and the joint
-  state GUI therefore report signal-based termination when the test ends.
-- A fresh Dev Container build is required to validate the explicit `ubuntu`
-  user creation fallback in the Dockerfile.
+- Interactive movement of all four joints has not yet been explicitly tested.
+- The earlier timeout-based launch test produced expected termination messages
+  because it was externally interrupted; the manual graphical launch was
+  successful.
 
 ## Next action
 
