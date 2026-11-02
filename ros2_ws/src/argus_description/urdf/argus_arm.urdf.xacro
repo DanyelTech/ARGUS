@@ -122,4 +122,16 @@
            effort="10.0" velocity="1.0"/>
   </joint>
 
+
+<!-- Tool-tip coordinate frame -->
+  <link name="tool_tip"/>
+
+<!-- Fixed offset from wrist origin to wrist tip -->
+  <joint name="tool_tip_joint" type="fixed">
+    <parent link="wrist_link"/>
+    <child link="tool_tip"/>
+    <origin xyz="0 0 ${wrist_length}" rpy="0 0 0"/>
+  </joint>
+
+
 </robot>

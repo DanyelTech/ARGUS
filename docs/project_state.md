@@ -1,18 +1,19 @@
 # ARGUS Project State
 
-**Last updated:** 2026-10-30
+**Last updated:** 2026-11-02
 **Project:** ARGUS v1  
-**Current phase:** Software-first development, Phase 2 complete — visualization
-and robot description
+**Current phase:** Software-first development, Phase 3 complete — forward
+kinematics
 
 ## Current checkpoint
 
 The repository contains the initial ROS 2 workspace, the `argus_bringup`
 Python package, and the `argus_description` resource package. The bringup
 package source is located at `ros2_ws/src/argus_bringup/` and includes
-publisher/subscriber nodes for the `/argus/status` topic. The description
-package now contains a generic simulated 4-DOF arm, a visualization launch
-file, and an RViz configuration.
+publisher/subscriber nodes for the `/argus/status` topic, a pure
+forward-kinematics implementation, and an FK ROS 2 node. The description
+package contains a generic simulated 4-DOF arm, a visualization launch file,
+an RViz configuration, and a `tool_tip` URDF frame.
 
 ## Verified in the repository
 
@@ -59,16 +60,35 @@ file, and an RViz configuration.
   `ros2_ws/src/argus_description/rviz/argus.rviz`.
 - `display.launch.py` successfully loads the saved RViz configuration
   automatically when launching `argus_description`.
+- `forward_kinematics.py` implements the four-joint tool-position calculation
+  in metres relative to `base_link`.
+- `fk_node.py` subscribes to `/joint_states`, validates the four required joint
+  names, and publishes the calculated position as a `PointStamped` on
+  `/argus/tool_position` with `base_link` as its frame.
+- The URDF includes a fixed `tool_tip` frame attached to `wrist_link`.
+- `cd ros2_ws && python3 -m pytest
+  src/argus_bringup/test/test_forward_kinematics.py -q` passes independently
+  with 4 tests passed.
+- `source /opt/ros/jazzy/setup.bash && cd ros2_ws && colcon build
+  --symlink-install` succeeds with the FK implementation.
 - An earlier bounded automated launch test confirmed that
   `robot_state_publisher`, `joint_state_publisher_gui`, and RViz2 started and
   exchanged the robot description. Its externally imposed timeout caused
   signal-based termination messages; those messages do not describe the later
   successful manual graphical launch.
+- User-reported manual verification confirmed agreement between ROS TF and the
+  Python FK node for zero-angle, shoulder-rotation, and bent-elbow
+  configurations. This comparison was not independently repeated in this
+  session.
 
 ## Not yet verified in this checkpoint
 
 - Interactive joint manipulation beyond launch-time GUI initialization.
-- Forward-kinematics calculations for the four joints.
+- End-to-end `/joint_states` to `/argus/tool_position` runtime behavior under
+  all joint configurations.
+- Independent ROS TF versus Python FK comparison for the reported
+  zero-angle, shoulder-rotation, and bent-elbow configurations.
+- Inverse kinematics, motion planning, and trajectory control.
 - Physical hardware operation. Hardware remains deferred in favor of
   simulation.
 
@@ -78,10 +98,13 @@ file, and an RViz configuration.
 - The earlier timeout-based launch test produced expected termination messages
   because it was externally interrupted; the manual graphical launch was
   successful.
+- The current FK milestone validates position calculations and the ROS
+  publication interface; inverse kinematics and motion control remain
+  unimplemented.
 
 ## Next action
 
-Implement and validate forward kinematics for the simulated 4-DOF arm,
+Implement and validate inverse kinematics for the simulated 4-DOF arm,
 without introducing hardware integration.
 
 ## Working protocol

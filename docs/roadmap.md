@@ -45,30 +45,64 @@ complete until its criteria are verified and recorded in
 - Joint limits and frame names are defined in the Xacro and represented in the
   RViz configuration.
 
-## Phase 3 — Kinematics and motion control
+## Phase 3 — Forward kinematics
+
+**Status:** Complete at current scope
+
+### Scope
+
+- Implement forward kinematics for the virtual arm.
+- Publish calculated tool position from a ROS 2 node.
+- Add and verify the `tool_tip` coordinate frame.
+
+### Completion criteria
+
+- Forward-kinematics results are validated by four unit tests.
+- The FK node subscribes to `/joint_states` and publishes
+  `/argus/tool_position`.
+- The tool position is expressed relative to `base_link`, matching the
+  `tool_tip` URDF frame.
+
+The four Python unit tests pass independently. The user also manually
+confirmed agreement between ROS TF and the Python FK node for zero-angle,
+shoulder-rotation, and bent-elbow configurations; that manual comparison is
+user-reported evidence.
+
+## Phase 4 — Inverse kinematics
 
 **Status:** Next
 
 ### Scope
 
-- Implement forward kinematics for the virtual arm as the next milestone.
-- Define and validate inverse kinematics goals and solutions.
+- Define and validate inverse-kinematics goals and solutions.
+- Check position and orientation tolerances.
+- Report unreachable goals and planning failures explicitly.
+
+### Completion criteria
+
+- Inverse-kinematics solutions are checked against position and orientation
+  tolerances.
+- Unreachable goals and planning failures are reported explicitly.
+- A repeatable test or demonstration command is documented.
+
+## Phase 5 — Motion control
+
+**Status:** Planned
+
+### Scope
+
 - Add joint control and motion planning interfaces.
 - Connect planned trajectories to the simulated robot.
 - Add basic deterministic motion demonstrations.
 
 ### Completion criteria
 
-- Forward-kinematics results are validated against known configurations.
-- Inverse-kinematics solutions are checked against position and orientation
-  tolerances.
 - Planned commands produce the intended simulated joint changes.
 - Motion is bounded by documented limits.
-- Unreachable goals and planning failures are reported explicitly.
 - Failures and invalid commands are visible to the operator.
 - A repeatable test or demonstration command is documented.
 
-## Phase 4 — Computer vision and coordinate transformations
+## Phase 6 — Computer vision and coordinate transformations
 
 **Status:** Planned
 
@@ -87,7 +121,7 @@ complete until its criteria are verified and recorded in
 - Coordinate transformations are validated against known reference points.
 - Perception failures and uncertain detections are visible to the operator.
 
-## Phase 5 — Safety and failure handling
+## Phase 7 — Safety and failure handling
 
 **Status:** Planned
 
@@ -106,7 +140,7 @@ complete until its criteria are verified and recorded in
 - Safety behavior is tested and recorded for representative scenarios.
 - Safety assumptions and limitations are explicit before hardware work begins.
 
-## Phase 6 — ESP32 firmware and serial communication
+## Phase 8 — ESP32 firmware and serial communication
 
 **Status:** Planned; hardware-independent experimentation allowed
 
@@ -125,7 +159,7 @@ complete until its criteria are verified and recorded in
 - Host and ESP32 communication is tested without requiring motor hardware.
 - Disconnects, malformed messages, and stale commands are handled safely.
 
-## Phase 7 — Physical arm integration
+## Phase 9 — Physical arm integration
 
 **Status:** Deferred
 

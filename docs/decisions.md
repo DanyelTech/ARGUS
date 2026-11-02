@@ -76,3 +76,18 @@ launch file from the container.
 **Reason:** Keep graphical ROS tools reproducible in the WSLg-backed VS Code
 container instead of depending on a host-specific `DISPLAY` value or manual
 socket setup.
+
+## D007 — Publish forward-kinematics tool position from a ROS 2 node
+
+**Date:** 2026-11-02
+**Status:** Accepted
+
+Forward kinematics is implemented as a reusable Python function in
+`argus_bringup`, with `fk_node.py` subscribing to `/joint_states` and
+publishing a `geometry_msgs/msg/PointStamped` on `/argus/tool_position`.
+Published coordinates use `base_link` as the frame, matching the fixed
+`tool_tip` frame in the robot description.
+
+**Reason:** Keep the mathematical calculation independently testable while
+providing a small ROS 2 interface that can be compared with the robot's TF
+transforms before inverse kinematics and motion control are added.

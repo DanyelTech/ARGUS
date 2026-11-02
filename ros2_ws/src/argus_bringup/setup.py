@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'status_publisher = argus_bringup.status_publisher:main',
             'status_subscriber = argus_bringup.status_subscriber:main',
+            'fk_node = argus_bringup.fk_node:main',
         ],
     },
 )
