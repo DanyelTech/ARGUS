@@ -1,9 +1,9 @@
 # ARGUS Project State
 
-**Last updated:** 2026-11-02
+**Last updated:** 2026-11-03
 **Project:** ARGUS v1  
-**Current phase:** Software-first development, Phase 3 complete — forward
-kinematics
+**Current phase:** Software-first development, Phase 4 complete at current
+scope — inverse kinematics
 
 ## Current checkpoint
 
@@ -80,6 +80,11 @@ an RViz configuration, and a `tool_tip` URDF frame.
   Python FK node for zero-angle, shoulder-rotation, and bent-elbow
   configurations. This comparison was not independently repeated in this
   session.
+- The IK suite independently passes 8 tests, and the combined FK and IK
+  suites pass 12 tests total.
+- The IK solver covers both base orientations, both elbow configurations,
+  geometric reachability, joint limits, backward reach, and FK round trips.
+- User-reported results also confirm all 8 IK tests passed.
 
 ## Not yet verified in this checkpoint
 
@@ -88,7 +93,8 @@ an RViz configuration, and a `tool_tip` URDF frame.
   all joint configurations.
 - Independent ROS TF versus Python FK comparison for the reported
   zero-angle, shoulder-rotation, and bent-elbow configurations.
-- Inverse kinematics, motion planning, and trajectory control.
+- ROS 2 inverse-kinematics integration.
+- Motion planning and trajectory control.
 - Physical hardware operation. Hardware remains deferred in favor of
   simulation.
 
@@ -98,14 +104,18 @@ an RViz configuration, and a `tool_tip` URDF frame.
 - The earlier timeout-based launch test produced expected termination messages
   because it was externally interrupted; the manual graphical launch was
   successful.
-- The current FK milestone validates position calculations and the ROS
-  publication interface; inverse kinematics and motion control remain
+- The IK solver keeps the wrist angle fixed at zero and does not solve wrist
+  orientation.
+- Collision checking is not implemented.
+- Base-angle limits use approximately +/-3.14 radians; exact +/-pi values
+  are rejected by the current edge-case tests.
+- ROS 2 IK integration, motion planning, and trajectory control remain
   unimplemented.
 
 ## Next action
 
-Implement and validate inverse kinematics for the simulated 4-DOF arm,
-without introducing hardware integration.
+Integrate inverse kinematics with ROS 2 so Cartesian targets can produce
+validated joint positions, without introducing hardware integration.
 
 ## Working protocol
 

@@ -91,3 +91,17 @@ Published coordinates use `base_link` as the frame, matching the fixed
 **Reason:** Keep the mathematical calculation independently testable while
 providing a small ROS 2 interface that can be compared with the robot's TF
 transforms before inverse kinematics and motion control are added.
+
+## D008 — Reject inverse-kinematics solutions outside URDF limits
+
+**Date:** 2026-11-03
+**Status:** Accepted
+
+The inverse-kinematics solver checks both base orientations and both elbow
+branches against the base, shoulder, elbow, and wrist limits defined by the
+robot description. It raises an explicit `ValueError` when no candidate is
+within those limits. The wrist angle remains fixed at zero.
+
+**Reason:** Geometric reachability is not sufficient for the simulated arm;
+solutions must also respect its configured joint bounds before they can be
+used for motion. Collision checking and ROS 2 integration remain future work.

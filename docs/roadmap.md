@@ -6,7 +6,7 @@ complete until its criteria are verified and recorded in
 
 ## Phase 1 — ROS 2 foundation
 
-**Status:** In progress
+**Status:** Complete at current scope
 
 ### Completed or implemented
 
@@ -70,22 +70,44 @@ user-reported evidence.
 
 ## Phase 4 — Inverse kinematics
 
+**Status:** In progress
+
+### Scope
+
+- Define and validate inverse-kinematics goals and solutions across both base
+  orientations and both elbow configurations.
+- Enforce the base, shoulder, elbow, and wrist limits defined by the URDF.
+- Check position tolerances through FK round trips.
+- Report unreachable goals and joint-limit failures explicitly.
+
+### Completion criteria
+
+- Inverse-kinematics solutions are checked against position tolerances.
+- Unreachable goals and joint-limit failures are reported explicitly.
+- A repeatable test or demonstration command is documented.
+
+The 8-test IK suite passes, including backward negative-elbow reach,
+unreachable geometry, joint-limit checks, and base-angle edge cases. The
+current scope keeps the wrist angle fixed at zero and does not include
+collision checking or ROS 2 integration.
+
+## Phase 5 — ROS 2 IK integration
+
 **Status:** Next
 
 ### Scope
 
-- Define and validate inverse-kinematics goals and solutions.
-- Check position and orientation tolerances.
-- Report unreachable goals and planning failures explicitly.
+- Add a ROS 2 interface for Cartesian IK targets.
+- Publish or command validated joint positions.
+- Verify target handling and failure reporting through ROS 2.
 
 ### Completion criteria
 
-- Inverse-kinematics solutions are checked against position and orientation
-  tolerances.
-- Unreachable goals and planning failures are reported explicitly.
-- A repeatable test or demonstration command is documented.
+- A ROS 2 node accepts a Cartesian target and invokes the IK solver.
+- Valid solutions are exposed through a documented joint-position interface.
+- Unreachable and joint-limit failures are visible to the operator.
 
-## Phase 5 — Motion control
+## Phase 6 — Motion control
 
 **Status:** Planned
 
@@ -102,7 +124,7 @@ user-reported evidence.
 - Failures and invalid commands are visible to the operator.
 - A repeatable test or demonstration command is documented.
 
-## Phase 6 — Computer vision and coordinate transformations
+## Phase 7 — Computer vision and coordinate transformations
 
 **Status:** Planned
 
@@ -121,7 +143,7 @@ user-reported evidence.
 - Coordinate transformations are validated against known reference points.
 - Perception failures and uncertain detections are visible to the operator.
 
-## Phase 7 — Safety and failure handling
+## Phase 8 — Safety and failure handling
 
 **Status:** Planned
 
@@ -140,7 +162,7 @@ user-reported evidence.
 - Safety behavior is tested and recorded for representative scenarios.
 - Safety assumptions and limitations are explicit before hardware work begins.
 
-## Phase 8 — ESP32 firmware and serial communication
+## Phase 9 — ESP32 firmware and serial communication
 
 **Status:** Planned; hardware-independent experimentation allowed
 
@@ -159,7 +181,7 @@ user-reported evidence.
 - Host and ESP32 communication is tested without requiring motor hardware.
 - Disconnects, malformed messages, and stale commands are handled safely.
 
-## Phase 9 — Physical arm integration
+## Phase 10 — Physical arm integration
 
 **Status:** Deferred
 
