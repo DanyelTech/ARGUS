@@ -93,12 +93,14 @@ collision checking or ROS 2 integration.
 
 ## Phase 5 — ROS 2 IK integration
 
-**Status:** Next
+**Status:** Complete at current simulation/visualization scope
 
 ### Scope
 
 - Add a ROS 2 interface for Cartesian IK targets.
 - Publish or command validated joint positions.
+- Automatically publish the upright zero-angle configuration for
+  visualization when `robot_state_publisher` is subscribed.
 - Verify target handling and failure reporting through ROS 2.
 
 ### Completion criteria
@@ -106,6 +108,17 @@ collision checking or ROS 2 integration.
 - A ROS 2 node accepts a Cartesian target and invokes the IK solver.
 - Valid solutions are exposed through a documented joint-position interface.
 - Unreachable and joint-limit failures are visible to the operator.
+
+The IK display launch now publishes the zero-angle joint state after
+`robot_state_publisher` subscribes to `/joint_states`. A synchronized runtime
+capture confirmed the four joint positions are all zero, and the node logged
+successful upright initialization. An isolated ROS runtime check verified
+reachable target publication and that an unreachable target does not publish
+a replacement configuration. The user manually verified the same target
+behavior and RViz display in the launch. The startup publication and target
+commands are visualization-only and assume the IK node is the sole
+`/joint_states` publisher. A persistent automated ROS integration test remains
+the next validation improvement.
 
 ## Phase 6 — Motion control
 

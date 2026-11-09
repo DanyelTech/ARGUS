@@ -105,3 +105,24 @@ within those limits. The wrist angle remains fixed at zero.
 **Reason:** Geometric reachability is not sufficient for the simulated arm;
 solutions must also respect its configured joint bounds before they can be
 used for motion. Collision checking and ROS 2 integration remain future work.
+
+## D009 — Keep ROS 2 IK commands simulation-only
+
+**Date:** 2026-11-09
+**Status:** Accepted
+
+The IK node accepts `geometry_msgs/msg/PointStamped` targets on
+`/argus/target_position` in the `base_link` frame and publishes
+`sensor_msgs/msg/JointState` commands on `/argus/joint_commands`. The
+`ik_display.launch.py` launch remaps that command topic to `/joint_states` for
+`robot_state_publisher` visualization and publishes a one-time zero-angle
+configuration after a subscriber connects. This interface is for simulation
+and visualization only, not physical motor control.
+
+Only one `/joint_states` publisher should be active. In particular,
+`ik_display.launch.py` must not be run concurrently with `display.launch.py`,
+which also starts `joint_state_publisher_gui` on `/joint_states`.
+
+**Reason:** Keep IK solving independently testable and prevent the
+visualization command interface from being mistaken for a safe hardware
+controller.

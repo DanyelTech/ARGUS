@@ -1,3 +1,4 @@
+"""Package setup configuration for ARGUS bringup nodes."""
 from setuptools import find_packages, setup
 
 package_name = 'argus_bringup'
@@ -23,6 +24,7 @@ setup(
             'status_publisher = argus_bringup.status_publisher:main',
             'status_subscriber = argus_bringup.status_subscriber:main',
             'fk_node = argus_bringup.fk_node:main',
+            'ik_node = argus_bringup.ik_node:main',
         ],
     },
 )
