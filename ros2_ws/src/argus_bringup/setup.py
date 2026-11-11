@@ -25,6 +25,7 @@ setup(
             'status_subscriber = argus_bringup.status_subscriber:main',
             'fk_node = argus_bringup.fk_node:main',
             'ik_node = argus_bringup.ik_node:main',
+            'trajectory_node = argus_bringup.trajectory_node:main',
         ],
     },
 )
