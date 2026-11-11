@@ -29,8 +29,10 @@ def calculate_duration(start, target, max_velocities):
 
     return max(joint_durations, default=0.0)
 
+
+
 def trajectory_at_time(start, target, elapsed_time, duration):
-    """Calculate joint positions at a given elapsed time."""
+    """Calculate smooth joint positions at a given time."""
 
     if duration < 0:
         raise ValueError("Duration cannot be negative")
@@ -43,5 +45,14 @@ def trajectory_at_time(start, target, elapsed_time, duration):
 
     alpha = min(1.0, elapsed_time / duration)
 
-    return interpolate_joints(start, target, alpha)
+    eased_alpha = smoothstep(alpha)
 
+    return interpolate_joints(start, target, eased_alpha)
+
+
+def smoothstep(alpha):
+    """Apply cubic easing to normalized trajectory progress."""
+    if not 0.0 <= alpha <= 1.0:
+        raise ValueError("Alpha must be between 0 and 1")
+
+    return 3.0 * alpha**2 - 2.0 * alpha**3

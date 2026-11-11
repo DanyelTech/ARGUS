@@ -100,7 +100,7 @@ class TrajectoryNode(Node):
         self.start = self.current
         self.target = target
 
-        self.duration = calculate_duration(
+        self.duration = 1.5 * calculate_duration(
             self.start,
             self.target,
             MAX_VELOCITIES,
