@@ -70,14 +70,15 @@ user-reported evidence.
 
 ## Phase 4 — Inverse kinematics
 
-**Status:** In progress
+**Status:** Complete at current position-only IK scope
 
 ### Scope
 
 - Define and validate inverse-kinematics goals and solutions across both base
   orientations and both elbow configurations.
 - Enforce the base, shoulder, elbow, and wrist limits defined by the URDF.
-- Check position tolerances through FK round trips.
+- Check position tolerances through FK round trips; wrist orientation is
+  outside the current scope.
 - Report unreachable goals and joint-limit failures explicitly.
 
 ### Completion criteria
@@ -122,20 +123,43 @@ the next validation improvement.
 
 ## Phase 6 — Motion control
 
-**Status:** Planned
+**Status:** In progress — smooth trajectory execution and completion signaling verified
 
-### Scope
+### Implemented and verified
 
-- Add joint control and motion planning interfaces.
-- Connect planned trajectories to the simulated robot.
-- Add basic deterministic motion demonstrations.
+- Joint-space interpolation between commanded configurations.
+- Per-joint velocity-based trajectory duration calculation.
+- Cubic smoothstep acceleration and deceleration profiles.
+- ROS 2 trajectory node publishing simulated joint states at approximately
+  30 Hz.
+- Cartesian target → IK → joint trajectory → RViz execution.
+- Valid joint-name, joint-count, and finite-angle checks.
+- Trajectory completion publisher on `/argus/trajectory_complete`.
+- User-reported manual verification of completion status during simulated
+  motion.
+- User-reported: 16 trajectory unit tests passed on 2026-11-12.
+
+### Remaining work
+
+- Implement command-specific trajectory completion acknowledgements.
+- Implement sequential multi-waypoint execution.
+- Add automated tests for waypoint ordering and completion handling.
+- Validate joint limits and representative failure cases.
+- Document repeatable motion demonstrations.
 
 ### Completion criteria
 
 - Planned commands produce the intended simulated joint changes.
-- Motion is bounded by documented limits.
-- Failures and invalid commands are visible to the operator.
-- A repeatable test or demonstration command is documented.
+- Sequential waypoints execute in the correct order.
+- Motion respects documented joint velocity and position limits.
+- Invalid commands and failures are handled predictably.
+- Automated tests and repeatable demonstration commands are documented.
+
+### Limitations
+
+The current controller uses simulated joint states. It does not provide
+physical actuator feedback, collision avoidance, or hardware-level safety
+guarantees.
 
 ## Phase 7 — Computer vision and coordinate transformations
 

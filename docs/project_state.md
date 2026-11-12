@@ -1,23 +1,45 @@
 # ARGUS Project State
 
-**Last updated:** 2026-11-09
+**Last updated:** 2026-11-12
 **Project:** ARGUS v1  
-**Current phase:** Software-first development, Phase 5 complete at current
-scope — ROS 2 inverse-kinematics integration
+**Current phase:** Phase 6 — Simulated motion control (in progress)
 
 ## Current checkpoint
 
-The repository contains the initial ROS 2 workspace, the `argus_bringup`
-Python package, and the `argus_description` resource package. The bringup
-package source is located at `ros2_ws/src/argus_bringup/` and includes
-publisher/subscriber nodes for the `/argus/status` topic, a pure
-forward-kinematics implementation, and an FK ROS 2 node. The description
-package contains a generic simulated 4-DOF arm, a visualization launch file,
-an RViz configuration, and a `tool_tip` URDF frame.
+ARGUS has a functioning ROS 2 Jazzy simulation of a 4-DOF robotic arm,
+including a Xacro robot description, RViz visualization, forward and inverse
+kinematics, and smooth joint-space trajectory execution.
 
-Phase 5 includes an IK display launch, automatic zero-angle initialization,
-and Cartesian-target-to-joint-state commands for visualization. Physical
-motion control remains deferred.
+The `argus_bringup` package provides Cartesian target handling, joint
+trajectory generation, and trajectory completion status. The
+`argus_description` package provides the robot model and visualization launch
+files.
+
+The current motion-control pipeline is:
+
+1. `/argus/target_position` receives a Cartesian target in `base_link`.
+2. The IK node calculates a valid joint configuration.
+3. `/argus/joint_commands` delivers the joint target.
+4. The trajectory node interpolates joint positions using cubic smoothstep
+   easing.
+5. `/joint_states` drives the simulated robot visualization.
+6. `/argus/trajectory_complete` reports whether the planned movement duration
+   has elapsed.
+
+The trajectory node publishes joint states at approximately 30 Hz. Motion
+duration is calculated using per-joint velocity limits of 0.5 rad/s, with a
+factor of 1.5 to account for smoothstep's peak velocity.
+
+The current launch command is:
+
+```bash
+cd /workspaces/argus/ros2_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 launch argus_description trajectory_display.launch.py
+```
+
+Physical actuator control has not yet been implemented.
 
 ## Verified in the repository
 
@@ -109,6 +131,46 @@ motion control remains deferred.
 - Targeted `flake8` passes for the Phase 5 node, launch file, and regression
   test.
 
+## Phase 6 — Verified motion-control progress
+
+- Joint-space interpolation is implemented in `trajectory.py`.
+- Trajectory duration is calculated from joint displacement and maximum joint
+  velocity.
+- Cubic smoothstep easing provides zero velocity at the start and end of each
+  planned movement.
+- The trajectory node publishes interpolated joint positions to
+  `/joint_states` at approximately 30 Hz.
+- `trajectory_display.launch.py` launches the IK node, trajectory node, robot
+  state publisher, and RViz.
+- User-reported RViz verification confirms smooth movement between reachable
+  Cartesian targets.
+- The trajectory node validates joint names, joint counts, and finite target
+  angles.
+- New targets received during motion begin from the current interpolated
+  position.
+- `/argus/trajectory_complete` publishes `std_msgs/msg/Bool`.
+- `false` indicates the planned trajectory is active.
+- `true` indicates its planned duration has elapsed.
+- User-reported runtime verification confirmed the status transitions from
+  `true` to `false` during movement and back to `true` afterward.
+- The trajectory completion helper passed six manual assertions.
+- User-reported: the complete trajectory unit-test file passed all 16 tests
+  on 2026-11-12.
+- User-reported: the trajectory completion implementation and tests were
+  committed and pushed to GitHub.
+
+### Current limitations
+
+- Completion is determined by elapsed trajectory time, not physical actuator
+  feedback.
+- The completion boolean does not identify individual commands.
+- The completion status is published continuously, including while idle.
+- Automated multi-waypoint execution has not been implemented.
+- Trajectory-node joint-limit validation and collision checking are not
+  implemented.
+- New commands during active movement can introduce velocity discontinuities.
+- No ESP32 communications or physical actuator control is implemented.
+
 ## Not yet verified in this checkpoint
 
 - Interactive joint manipulation beyond launch-time GUI initialization.
@@ -118,7 +180,7 @@ motion control remains deferred.
   zero-angle, shoulder-rotation, and bent-elbow configurations.
 - A persistent automated ROS integration test for target success and
   unreachable-target preservation.
-- Motion planning and trajectory control.
+- Automated multi-waypoint execution.
 - Physical hardware operation. Hardware remains deferred in favor of
   simulation.
 
@@ -142,12 +204,16 @@ motion control remains deferred.
   `flake8`/`pep257` checks because of existing style violations and a stale,
   missing installed launch-file path. The Phase 5 Python files pass targeted
   `flake8`.
-- Motion planning and physical hardware operation are not implemented.
+- Physical hardware operation is not implemented.
 
 ## Next action
 
-Add a persistent ROS runtime integration test for target publication and
-rejection before starting motion-control work.
+Implement reliable waypoint execution, starting with command-specific
+trajectory completion acknowledgement to prevent the controller from
+mistaking the initial idle state for completion of a newly submitted waypoint.
+
+Then implement and test a sequential waypoint queue before proceeding to
+safety validation and ESP32 communication.
 
 ## Working protocol
 
