@@ -7,6 +7,7 @@ from argus_bringup.trajectory import (
     interpolate_joints,
     smoothstep,
     trajectory_at_time,
+    trajectory_complete,
 )
 
 
@@ -118,3 +119,23 @@ def test_invalid_velocity():
         calculate_duration(
             (0.0,), (1.0,), (0.0,)
         )
+def test_trajectory_complete_before_duration():
+    assert trajectory_complete(0.0, 2.0) is False
+    assert trajectory_complete(1.0, 2.0) is False
+
+
+def test_trajectory_complete_at_and_after_duration():
+    assert trajectory_complete(2.0, 2.0) is True
+    assert trajectory_complete(3.0, 2.0) is True
+
+
+def test_trajectory_complete_zero_duration():
+    assert trajectory_complete(0.0, 0.0) is True
+
+
+def test_trajectory_complete_rejects_negative_time():
+    with pytest.raises(ValueError):
+        trajectory_complete(-1.0, 2.0)
+
+    with pytest.raises(ValueError):
+        trajectory_complete(1.0, -2.0)

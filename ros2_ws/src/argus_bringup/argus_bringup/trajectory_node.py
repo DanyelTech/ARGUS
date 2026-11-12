@@ -6,10 +6,12 @@ import time
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
+from std_msgs.msg import Bool
 
 from argus_bringup.trajectory import (
     calculate_duration,
     trajectory_at_time,
+    trajectory_complete,
 )
 
 
@@ -47,6 +49,12 @@ class TrajectoryNode(Node):
         self.state_publisher = self.create_publisher(
             JointState,
             '/joint_states',
+            10,
+        )
+
+        self.status_publisher = self.create_publisher(
+            Bool,
+            '/argus/trajectory_complete',
             10,
         )
 
@@ -125,6 +133,15 @@ class TrajectoryNode(Node):
         state.position = list(self.current)
 
         self.state_publisher.publish(state)
+        elapsed = now - self.start_time
+
+        complete = Bool()
+        complete.data = trajectory_complete(
+            elapsed,
+            self.duration,
+        )
+
+        self.status_publisher.publish(complete)
 
 
 def main(args=None):

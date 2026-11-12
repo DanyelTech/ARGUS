@@ -56,3 +56,10 @@ def smoothstep(alpha):
         raise ValueError("Alpha must be between 0 and 1")
 
     return 3.0 * alpha**2 - 2.0 * alpha**3
+
+def trajectory_complete(elapsed_time, duration):
+    """Return whether the planned trajectory has finished."""
+    if elapsed_time < 0 or duration < 0:
+        raise ValueError("Time values cannot be negative")
+
+    return elapsed_time >= duration
